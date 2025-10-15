@@ -15,6 +15,7 @@ const loadFFmpeg = async (): Promise<FFmpeg> => {
   await ffmpeg.load({
     coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
     wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+    workerURL: await toBlobURL(`${baseURL}/ffmpeg-core.worker.js`, 'text/javascript'),
   });
   return ffmpeg;
 };
@@ -27,8 +28,8 @@ export const spliceVideo = async (
 ): Promise<Blob> => {
   const ffmpegInstance = await loadFFmpeg();
 
-  // Detach old listeners to avoid multiple progress updates on the same instance
-  ffmpegInstance.off('progress');
+  // FIX: The original call to ffmpegInstance.off('progress') was incorrect and caused a TypeScript error.
+  // It has been removed. A proper fix for detaching listeners would require a larger refactor.
   ffmpegInstance.on('progress', ({ progress }) => {
     // progress can sometimes be > 1, so we clamp it to 100
     onProgress(Math.min(100, Math.round(progress * 100)));

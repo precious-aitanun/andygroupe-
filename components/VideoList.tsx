@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 import React, { useRef } from 'react';
 import { Video } from '../types';
 import { PlusIcon, TrashIcon } from './Icons';

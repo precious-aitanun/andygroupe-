@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Annotation, NewAnnotation, Video } from '../types';
 import { formatTimestamp } from '../utils/time';

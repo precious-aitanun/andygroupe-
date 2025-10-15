@@ -1,14 +1,9 @@
+/// <reference lib="dom" />
 
 import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { 
     PlayIcon, 
     PauseIcon,
-    BackIcon,
-    ChevronRightIcon,
-    ChevronDoubleLeftIcon,
-    ChevronDoubleRightIcon,
-    StepBackwardIcon,
-    StepForwardIcon
 } from './Icons';
 import { formatTimestamp } from '../utils/time';
 
@@ -19,6 +14,7 @@ interface VideoPlayerProps {
 
 export interface VideoPlayerHandles {
   seek: (time: number) => void;
+  seekBy: (amount: number) => void;
 }
 
 const VideoPlayer = forwardRef<VideoPlayerHandles, VideoPlayerProps>(({ src, onTimeUpdate }, ref) => {
@@ -34,8 +30,18 @@ const VideoPlayer = forwardRef<VideoPlayerHandles, VideoPlayerProps>(({ src, onT
     seek(time: number) {
       if (videoRef.current) {
         videoRef.current.currentTime = time;
+        setCurrentTime(time);
       }
     },
+    seekBy(amount: number) {
+        if (videoRef.current) {
+            const currentDuration = videoRef.current.duration;
+            const newTime = Math.max(0, Math.min(currentDuration, videoRef.current.currentTime + amount));
+            videoRef.current.currentTime = newTime;
+            setCurrentTime(newTime);
+            onTimeUpdate(newTime);
+        }
+    }
   }));
 
   useEffect(() => {
@@ -101,18 +107,9 @@ const VideoPlayer = forwardRef<VideoPlayerHandles, VideoPlayerProps>(({ src, onT
       setCurrentTime(time);
     }
   };
-  
-  const seekBy = (amount: number) => {
-    if (videoRef.current) {
-      const newTime = Math.max(0, Math.min(duration, videoRef.current.currentTime + amount));
-      videoRef.current.currentTime = newTime;
-      setCurrentTime(newTime);
-      onTimeUpdate(newTime);
-    }
-  };
 
   return (
-    <div className="relative bg-black rounded-lg overflow-hidden group w-full">
+    <div className="relative bg-black rounded-t-lg overflow-hidden group w-full">
       <video
         ref={videoRef}
         src={src}
@@ -135,15 +132,6 @@ const VideoPlayer = forwardRef<VideoPlayerHandles, VideoPlayerProps>(({ src, onT
               {isPlaying ? <PauseIcon className="w-7 h-7" /> : <PlayIcon className="w-7 h-7" />}
             </button>
             <span className="text-xs font-mono w-28 text-left">{formatTimestamp(currentTime)} / {formatTimestamp(duration)}</span>
-          </div>
-
-          <div className="flex items-center gap-x-1 sm:gap-x-2">
-            <button onClick={() => seekBy(-10)} className="p-1.5 rounded-full hover:bg-white/20 transition-colors" title="-10s"><ChevronDoubleLeftIcon className="w-5 h-5" /></button>
-            <button onClick={() => seekBy(-1)} className="p-1.5 rounded-full hover:bg-white/20 transition-colors" title="-1s"><BackIcon className="w-5 h-5" /></button>
-            <button onClick={() => seekBy(-0.1)} className="p-1.5 rounded-full hover:bg-white/20 transition-colors" title="-0.1s (100ms)"><StepBackwardIcon className="w-5 h-5" /></button>
-            <button onClick={() => seekBy(0.1)} className="p-1.5 rounded-full hover:bg-white/20 transition-colors" title="+0.1s (100ms)"><StepForwardIcon className="w-5 h-5" /></button>
-            <button onClick={() => seekBy(1)} className="p-1.5 rounded-full hover:bg-white/20 transition-colors" title="+1s"><ChevronRightIcon className="w-5 h-5" /></button>
-            <button onClick={() => seekBy(10)} className="p-1.5 rounded-full hover:bg-white/20 transition-colors" title="+10s"><ChevronDoubleRightIcon className="w-5 h-5" /></button>
           </div>
           
           <div className="relative flex justify-end w-28">

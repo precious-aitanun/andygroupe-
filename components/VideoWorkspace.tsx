@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Video, Annotation, NewAnnotation } from '../types';
 import VideoPlayer, { VideoPlayerHandles } from './VideoPlayer';
 import AnnotationManager from './AnnotationManager';
+import FrameControls from './FrameControls';
 import { BackIcon } from './Icons';
 
 interface VideoWorkspaceProps {
@@ -35,6 +36,10 @@ const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
     videoPlayerRef.current?.seek(time);
   };
 
+  const handleSeekBy = (amount: number) => {
+    videoPlayerRef.current?.seekBy(amount);
+  };
+
   return (
     <div className="bg-gray-800 rounded-lg shadow-lg h-full flex flex-col w-full border border-gray-700">
       <div className="flex items-center p-3 border-b border-gray-700 bg-gray-800/80 rounded-t-lg">
@@ -55,6 +60,7 @@ const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
             src={videoUrl}
             onTimeUpdate={setCurrentTime}
           />
+          <FrameControls onSeekBy={handleSeekBy} />
         </div>
         <div className="lg:w-1/3 flex flex-col h-full overflow-hidden">
           <AnnotationManager

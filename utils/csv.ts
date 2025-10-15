@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 import { Annotation } from '../types';
 import { formatTimestamp } from './time';
 
