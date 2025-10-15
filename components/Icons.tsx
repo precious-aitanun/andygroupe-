@@ -47,6 +47,12 @@ export const SaveIcon: React.FC<IconProps> = ({ className }) => (
   </svg>
 );
 
+export const CropIcon: React.FC<IconProps> = ({ className }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3.75h-3.75a2.25 2.25 0 0 0-2.25 2.25v3.75m0 0H6m-3.75 0v3.75a2.25 2.25 0 0 0 2.25 2.25h3.75m0 0H12m-3.75 0V8.25m9 3.75h3.75a2.25 2.25 0 0 0 2.25-2.25v-3.75m0 0h-3.75m3.75 0V8.25a2.25 2.25 0 0 0-2.25-2.25h-3.75m0 0H12m3.75 0v3.75" />
+  </svg>
+);
+
 export const BackIcon: React.FC<IconProps> = ({ className }) => (
   <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />

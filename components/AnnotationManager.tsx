@@ -3,7 +3,8 @@ import { Annotation, NewAnnotation, Video } from '../types';
 import { formatTimestamp } from '../utils/time';
 import { exportAnnotationsToCSV } from '../utils/csv';
 import { exportAnnotationsToTXT } from '../utils/txt';
-import { TrashIcon, DownloadIcon, EditIcon, SaveIcon } from './Icons';
+import { TrashIcon, DownloadIcon, EditIcon, SaveIcon, CropIcon } from './Icons';
+import { spliceVideo } from '../utils/video';
 
 interface AnnotationManagerProps {
   video: Video;
@@ -31,6 +32,8 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
   const [editingAnnotation, setEditingAnnotation] = useState<Annotation | null>(null);
   const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
   const downloadMenuRef = useRef<HTMLDivElement>(null);
+  const [splicingAnnotationId, setSplicingAnnotationId] = useState<string | null>(null);
+  const [spliceProgress, setSpliceProgress] = useState(0);
 
   const fetchAnnotations = useCallback(async () => {
     const fetchedAnnotations = await getAnnotations();
@@ -108,6 +111,43 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
     }
   };
 
+  const handleSpliceAndDownload = async (annotation: Annotation) => {
+    if (splicingAnnotationId) return;
+
+    setSplicingAnnotationId(annotation.id);
+    setSpliceProgress(0);
+
+    try {
+      const videoBlob = await spliceVideo(
+        video.file,
+        annotation.startTime,
+        annotation.endTime,
+        (progress) => {
+          setSpliceProgress(progress);
+        }
+      );
+
+      const url = URL.createObjectURL(videoBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      const safeVideoName = video.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const startTimeFormatted = formatTimestamp(annotation.startTime).replace(/[:.]/g, '-');
+      const endTimeFormatted = formatTimestamp(annotation.endTime).replace(/[:.]/g, '-');
+      a.download = `${safeVideoName}_clip_${startTimeFormatted}_to_${endTimeFormatted}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to splice video:", error);
+      alert("An error occurred while creating the video clip. Check the console for details.");
+    } finally {
+      setSplicingAnnotationId(null);
+      setSpliceProgress(0);
+    }
+  };
+
+
   return (
     <div className="bg-gray-800 h-full flex flex-col rounded-lg">
       <div className="flex justify-between items-center p-3 border-b border-gray-700">
@@ -156,9 +196,19 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
                     <p className="font-mono text-blue-400 text-xs mb-1">{formatTimestamp(ann.startTime)} → {formatTimestamp(ann.endTime)}</p>
                     <p className="text-gray-200 whitespace-pre-wrap">{ann.text}</p>
                 </div>
-                <div className="flex-shrink-0 ml-2 space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={(e) => { e.stopPropagation(); handleEdit(ann); }} className="p-1 rounded-full hover:bg-blue-500/50"><EditIcon className="w-4 h-4" /></button>
-                  <button onClick={(e) => { e.stopPropagation(); handleDelete(ann.id); }} className="p-1 rounded-full hover:bg-red-500/50"><TrashIcon className="w-4 h-4" /></button>
+                <div className="flex-shrink-0 ml-2 flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                   {splicingAnnotationId === ann.id ? (
+                    <div className="flex items-center gap-2 px-1 text-gray-300">
+                      <span className="text-xs font-mono w-9 text-center">{spliceProgress}%</span>
+                      <div className="w-4 h-4 border-2 border-t-blue-500 border-gray-600 rounded-full animate-spin"></div>
+                    </div>
+                  ) : (
+                    <>
+                      <button onClick={(e) => { e.stopPropagation(); handleSpliceAndDownload(ann); }} className="p-1.5 rounded-full hover:bg-green-500/50 text-gray-300 hover:text-white" title="Download clip"><CropIcon className="w-4 h-4" /></button>
+                      <button onClick={(e) => { e.stopPropagation(); handleEdit(ann); }} className="p-1.5 rounded-full hover:bg-blue-500/50 text-gray-300 hover:text-white" title="Edit annotation"><EditIcon className="w-4 h-4" /></button>
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(ann.id); }} className="p-1.5 rounded-full hover:bg-red-500/50 text-gray-300 hover:text-white" title="Delete annotation"><TrashIcon className="w-4 h-4" /></button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
