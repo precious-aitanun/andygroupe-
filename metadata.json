@@ -1,0 +1,5 @@
+{
+  "name": "Video Annotation Pro",
+  "description": "An application to upload, view, and annotate videos. Annotations can be time-stamped and exported as a CSV file. Designed with a mobile-first approach for ease of use on any device.",
+  "requestFramePermissions": []
+}
