@@ -29,17 +29,23 @@ const VideoPlayer = forwardRef<VideoPlayerHandles, VideoPlayerProps>(({ src, onT
   useImperativeHandle(ref, () => ({
     seek(time: number) {
       if (videoRef.current) {
-        videoRef.current.currentTime = time;
-        setCurrentTime(time);
+        const roundedTime = Math.round(time * 1000) / 1000;
+        videoRef.current.currentTime = roundedTime;
+        setCurrentTime(roundedTime);
+        onTimeUpdate(roundedTime);
       }
     },
     seekBy(amount: number) {
         if (videoRef.current) {
             const currentDuration = videoRef.current.duration;
-            const newTime = Math.max(0, Math.min(currentDuration, videoRef.current.currentTime + amount));
-            videoRef.current.currentTime = newTime;
-            setCurrentTime(newTime);
-            onTimeUpdate(newTime);
+            const newTime = videoRef.current.currentTime + amount;
+            const clampedTime = Math.max(0, Math.min(currentDuration, newTime));
+            // Round to 3 decimal places to avoid floating point inaccuracies
+            const roundedTime = Math.round(clampedTime * 1000) / 1000;
+            
+            videoRef.current.currentTime = roundedTime;
+            setCurrentTime(roundedTime);
+            onTimeUpdate(roundedTime);
         }
     }
   }));
@@ -105,6 +111,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandles, VideoPlayerProps>(({ src, onT
     if (videoRef.current) {
       videoRef.current.currentTime = time;
       setCurrentTime(time);
+      onTimeUpdate(time);
     }
   };
 
