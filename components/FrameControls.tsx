@@ -8,7 +8,7 @@ import {
   ChevronDoubleRightIcon,
 } from './Icons';
 
-const FRAME_DURATION = 1 / 30; // Assuming 30fps for frame-by-frame seeking
+const SMALL_STEP_DURATION = 0.1; // 100ms step
 
 interface FrameControlsProps {
   onSeekBy: (amount: number) => void;
@@ -41,15 +41,15 @@ const FrameControls: React.FC<FrameControlsProps> = ({ onSeekBy }) => {
           <BackIcon className="w-5 h-5" />
           <span>-1s</span>
         </ControlButton>
-        <ControlButton onClick={() => onSeekBy(-FRAME_DURATION)} title="-1 frame">
+        <ControlButton onClick={() => onSeekBy(-SMALL_STEP_DURATION)} title="-0.1 seconds">
           <StepBackwardIcon className="w-5 h-5" />
-          <span>-1f</span>
+          <span>-0.1s</span>
         </ControlButton>
       </div>
 
       <div className="flex items-stretch gap-2">
-        <ControlButton onClick={() => onSeekBy(FRAME_DURATION)} title="+1 frame">
-          <span>+1f</span>
+        <ControlButton onClick={() => onSeekBy(SMALL_STEP_DURATION)} title="+0.1 seconds">
+          <span>+0.1s</span>
           <StepForwardIcon className="w-5 h-5" />
         </ControlButton>
         <ControlButton onClick={() => onSeekBy(1)} title="+1 second">
