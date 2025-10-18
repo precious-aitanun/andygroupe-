@@ -203,26 +203,24 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
             <p className="text-center text-gray-500 pt-8">No annotations yet.</p>
           ) : (
             annotations.map(ann => (
-              <div key={ann.id} className="bg-gray-700/50 p-3 rounded-lg text-sm group cursor-pointer hover:bg-gray-700 transition-colors" onClick={() => onSeek(ann.startTime)}>
-                <div className="flex justify-between items-start">
-                  <div className="flex-grow">
-                      <p className="font-mono text-blue-400 text-xs mb-1">{formatTimestamp(ann.startTime)} → {formatTimestamp(ann.endTime)}</p>
-                      <p className="text-gray-200 whitespace-pre-wrap">{ann.text}</p>
-                  </div>
-                  <div className="flex-shrink-0 ml-2 flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {splicingAnnotationId === ann.id ? (
-                      <div className="flex items-center gap-2 px-1 text-gray-300">
-                        <span className="text-xs font-mono w-9 text-center">{spliceProgress}%</span>
-                        <div className="w-4 h-4 border-2 border-t-blue-500 border-gray-600 rounded-full animate-spin"></div>
-                      </div>
-                    ) : (
-                      <>
-                        <button onClick={(e) => { e.stopPropagation(); handleSpliceAndDownload(ann); }} className="p-1.5 rounded-full hover:bg-green-500/50 text-gray-300 hover:text-white" title="Download clip"><CropIcon className="w-4 h-4" /></button>
-                        <button onClick={(e) => { e.stopPropagation(); handleEdit(ann); }} className="p-1.5 rounded-full hover:bg-blue-500/50 text-gray-300 hover:text-white" title="Edit annotation"><EditIcon className="w-4 h-4" /></button>
-                        <button onClick={(e) => { e.stopPropagation(); handleDelete(ann.id); }} className="p-1.5 rounded-full hover:bg-red-500/50 text-gray-300 hover:text-white" title="Delete annotation"><TrashIcon className="w-4 h-4" /></button>
-                      </>
-                    )}
-                  </div>
+              <div key={ann.id} className="relative bg-gray-700/50 p-3 rounded-lg text-sm group cursor-pointer hover:bg-gray-700 transition-colors" onClick={() => onSeek(ann.startTime)}>
+                <div>
+                    <p className="font-mono text-blue-400 text-xs mb-1">{formatTimestamp(ann.startTime)} → {formatTimestamp(ann.endTime)}</p>
+                    <p className="text-gray-200 whitespace-pre-wrap break-words">{ann.text}</p>
+                </div>
+                <div className="absolute top-2 right-2 flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {splicingAnnotationId === ann.id ? (
+                    <div className="flex items-center gap-2 px-2 py-1 text-gray-300 bg-gray-800/50 rounded-full">
+                      <span className="text-xs font-mono w-9 text-center">{spliceProgress}%</span>
+                      <div className="w-4 h-4 border-2 border-t-blue-500 border-gray-600 rounded-full animate-spin"></div>
+                    </div>
+                  ) : (
+                    <>
+                      <button onClick={(e) => { e.stopPropagation(); handleSpliceAndDownload(ann); }} className="p-1.5 rounded-full bg-gray-800/50 hover:bg-green-600 text-gray-300 hover:text-white" title="Download clip"><CropIcon className="w-4 h-4" /></button>
+                      <button onClick={(e) => { e.stopPropagation(); handleEdit(ann); }} className="p-1.5 rounded-full bg-gray-800/50 hover:bg-blue-600 text-gray-300 hover:text-white" title="Edit annotation"><EditIcon className="w-4 h-4" /></button>
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(ann.id); }} className="p-1.5 rounded-full bg-gray-800/50 hover:bg-red-600 text-gray-300 hover:text-white" title="Delete annotation"><TrashIcon className="w-4 h-4" /></button>
+                    </>
+                  )}
                 </div>
               </div>
             ))
