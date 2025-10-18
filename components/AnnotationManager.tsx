@@ -5,7 +5,7 @@ import { Annotation, NewAnnotation, Video } from '../types';
 import { formatTimestamp } from '../utils/time';
 import { exportAnnotationsToCSV, importAnnotationsFromCSV } from '../utils/csv';
 import { exportAnnotationsToTXT } from '../utils/txt';
-import { TrashIcon, DownloadIcon, EditIcon, CropIcon, PlusIcon, UploadIcon } from './Icons';
+import { TrashIcon, DownloadIcon, EditIcon, CropIcon, PlusIcon, UploadIcon, SaveIcon, XMarkIcon } from './Icons';
 import { spliceVideo } from '../utils/video';
 import AnnotationEditorModal from './AnnotationEditorModal';
 
@@ -67,8 +67,18 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
     if (!text.trim()) return;
   
     if (editingAnnotation) { // This is an update
+      if (newStartTime === null || newEndTime === null) {
+        alert("A valid start and end time must be set.");
+        return;
+      }
+      if (newStartTime > newEndTime) {
+          alert("Start time cannot be after end time.");
+          return;
+      }
       const updatedAnnotation = { 
           ...editingAnnotation, 
+          startTime: newStartTime,
+          endTime: newEndTime,
           text: text,
       };
       await updateAnnotation(updatedAnnotation);
@@ -99,7 +109,8 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
 
   const handleEdit = (annotation: Annotation) => {
     setEditingAnnotation(annotation);
-    setIsModalOpen(true);
+    setNewStartTime(annotation.startTime);
+    setNewEndTime(annotation.endTime);
   };
   
   const handleOpenNewAnnotationModal = () => {
@@ -115,13 +126,37 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
     setIsModalOpen(true);
   }
 
+  const handleCancelEdit = () => {
+    setEditingAnnotation(null);
+    setNewStartTime(null);
+    setNewEndTime(null);
+  };
+
+  const handleOpenUpdateModal = () => {
+    if (!editingAnnotation) return;
+    if (newStartTime === null || newEndTime === null) return;
+
+    if (newStartTime > newEndTime) {
+        alert("Start time cannot be after end time.");
+        return;
+    }
+    setIsModalOpen(true);
+  }
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setEditingAnnotation(null);
+    // If the modal was for editing, cancel the edit mode as well.
+    if (editingAnnotation) {
+      handleCancelEdit();
+    }
   }
 
   const handleDelete = async (annotationId: string) => {
     if (window.confirm('Are you sure you want to delete this annotation?')) {
+      // If deleting the annotation currently being edited, exit edit mode
+      if (editingAnnotation?.id === annotationId) {
+        handleCancelEdit();
+      }
       await deleteAnnotation(annotationId);
       fetchAnnotations();
     }
@@ -243,7 +278,7 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
             <p className="text-center text-gray-500 pt-8">No annotations yet.</p>
           ) : (
             annotations.map(ann => (
-              <div key={ann.id} className="relative bg-gray-700/50 p-3 rounded-lg text-sm group cursor-pointer hover:bg-gray-700 transition-colors" onClick={() => onSeek(ann.startTime)}>
+              <div key={ann.id} className={`relative bg-gray-700/50 p-3 rounded-lg text-sm group cursor-pointer hover:bg-gray-700 transition-colors ${editingAnnotation?.id === ann.id ? 'ring-2 ring-blue-500' : ''}`} onClick={() => onSeek(ann.startTime)}>
                 <div>
                     <p className="font-mono text-blue-400 text-xs mb-1">{formatTimestamp(ann.startTime)} → {formatTimestamp(ann.endTime)}</p>
                     <p className="text-gray-200 whitespace-pre-wrap break-words">{ann.text}</p>
@@ -284,15 +319,39 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
                   <button onClick={() => setNewEndTime(currentTime)} className="px-2 py-0.5 text-xs bg-blue-600 hover:bg-blue-700 rounded transition-colors">Set</button>
               </div>
           </div>
+          
+          {editingAnnotation ? (
+            <div className="mt-2">
+              <p className="text-xs text-center text-gray-400 mb-2">
+                Editing annotation. Use 'Set' to change times.
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={handleCancelEdit}
+                  className="w-full px-4 py-2.5 text-sm font-bold text-white bg-gray-600 hover:bg-gray-500 rounded-md transition-colors flex items-center justify-center gap-2"
+                >
+                  <XMarkIcon className="w-5 h-5"/> Cancel
+                </button>
+                <button
+                  onClick={handleOpenUpdateModal}
+                  className="w-full px-4 py-2.5 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={newStartTime === null || newEndTime === null || newStartTime > newEndTime}
+                >
+                  <SaveIcon className="w-5 h-5"/> Save Changes
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+                onClick={handleOpenNewAnnotationModal}
+                className="w-full mt-2 px-4 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={newStartTime === null || newEndTime === null || newStartTime > newEndTime}
+            >
+                <PlusIcon className="w-5 h-5"/>
+                Add Annotation
+            </button>
+          )}
 
-          <button
-              onClick={handleOpenNewAnnotationModal}
-              className="w-full mt-2 px-4 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={newStartTime === null || newEndTime === null || newStartTime > newEndTime}
-          >
-              <PlusIcon className="w-5 h-5"/>
-              Add Annotation
-          </button>
         </div>
       </div>
       <AnnotationEditorModal 
@@ -300,8 +359,8 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
         onClose={handleCloseModal}
         onSave={handleSaveFromModal}
         annotation={editingAnnotation}
-        startTime={newStartTime}
-        endTime={newEndTime}
+        startTime={editingAnnotation ? newStartTime : newStartTime}
+        endTime={editingAnnotation ? newEndTime : newEndTime}
       />
     </>
   );
