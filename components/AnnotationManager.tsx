@@ -3,9 +3,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Annotation, NewAnnotation, Video } from '../types';
 import { formatTimestamp } from '../utils/time';
-import { exportAnnotationsToCSV } from '../utils/csv';
+import { exportAnnotationsToCSV, importAnnotationsFromCSV } from '../utils/csv';
 import { exportAnnotationsToTXT } from '../utils/txt';
-import { TrashIcon, DownloadIcon, EditIcon, CropIcon, PlusIcon } from './Icons';
+import { TrashIcon, DownloadIcon, EditIcon, CropIcon, PlusIcon, UploadIcon } from './Icons';
 import { spliceVideo } from '../utils/video';
 import AnnotationEditorModal from './AnnotationEditorModal';
 
@@ -14,6 +14,7 @@ interface AnnotationManagerProps {
   currentTime: number;
   getAnnotations: () => Promise<Annotation[]>;
   addAnnotation: (annotation: NewAnnotation) => Promise<Annotation>;
+  addMultipleAnnotations: (annotations: NewAnnotation[]) => Promise<void>;
   updateAnnotation: (annotation: Annotation) => Promise<void>;
   deleteAnnotation: (annotationId: string) => Promise<void>;
   onSeek: (time: number) => void;
@@ -24,6 +25,7 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
   currentTime,
   getAnnotations,
   addAnnotation,
+  addMultipleAnnotations,
   updateAnnotation,
   deleteAnnotation,
   onSeek,
@@ -37,6 +39,7 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
   const downloadMenuRef = useRef<HTMLDivElement>(null);
   const [splicingAnnotationId, setSplicingAnnotationId] = useState<string | null>(null);
   const [spliceProgress, setSpliceProgress] = useState(0);
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const fetchAnnotations = useCallback(async () => {
     const fetchedAnnotations = await getAnnotations();
@@ -160,41 +163,78 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
     }
   };
 
+  const handleImportClick = () => {
+    importInputRef.current?.click();
+  };
+
+  const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const importedAnnotations = await importAnnotationsFromCSV(file);
+      if (importedAnnotations.length === 0) {
+        alert("No valid annotations found in the file.");
+        return;
+      }
+
+      if (window.confirm(`Found ${importedAnnotations.length} annotations. Do you want to add them to this video? This cannot be undone.`)) {
+        const annotationsWithVideoId = importedAnnotations.map(ann => ({ ...ann, videoId: video.id }));
+        await addMultipleAnnotations(annotationsWithVideoId);
+        await fetchAnnotations();
+        alert("Annotations imported successfully!");
+      }
+    } catch (error) {
+      console.error("Failed to import annotations:", error);
+      alert(`Error importing annotations: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      if(event.target) {
+        event.target.value = '';
+      }
+    }
+  };
+
   return (
     <>
       <div className="bg-gray-800 h-full flex flex-col rounded-lg">
         <div className="flex justify-between items-center p-3 border-b border-gray-700">
           <h3 className="text-md font-semibold">Annotations</h3>
-          <div className="relative" ref={downloadMenuRef}>
-            <button
-              onClick={() => setIsDownloadMenuOpen(prev => !prev)}
-              className="p-2 rounded-full text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
-              title="Download Annotations"
-            >
-              <DownloadIcon className="w-5 h-5" />
+          <div className="flex items-center gap-1">
+            <input type="file" accept=".csv" ref={importInputRef} onChange={handleFileImport} className="hidden" />
+            <button onClick={handleImportClick} className="p-2 rounded-full text-gray-300 hover:bg-gray-700 hover:text-white transition-colors" title="Import Annotations from CSV" >
+              <UploadIcon className="w-5 h-5" />
             </button>
-            {isDownloadMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-md shadow-lg z-10 py-1 border border-gray-600">
-                <button
-                  onClick={() => {
-                    exportAnnotationsToCSV(annotations, video.name);
-                    setIsDownloadMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-blue-600"
-                >
-                  Download as CSV
-                </button>
-                <button
-                  onClick={() => {
-                    exportAnnotationsToTXT(annotations, video.name);
-                    setIsDownloadMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-blue-600"
-                >
-                  Download as TXT
-                </button>
-              </div>
-            )}
+            <div className="relative" ref={downloadMenuRef}>
+              <button
+                onClick={() => setIsDownloadMenuOpen(prev => !prev)}
+                className="p-2 rounded-full text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                title="Download Annotations"
+              >
+                <DownloadIcon className="w-5 h-5" />
+              </button>
+              {isDownloadMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-md shadow-lg z-10 py-1 border border-gray-600">
+                  <button
+                    onClick={() => {
+                      exportAnnotationsToCSV(annotations, video.name);
+                      setIsDownloadMenuOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-blue-600"
+                  >
+                    Download as CSV
+                  </button>
+                  <button
+                    onClick={() => {
+                      exportAnnotationsToTXT(annotations, video.name);
+                      setIsDownloadMenuOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-blue-600"
+                  >
+                    Download as TXT
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

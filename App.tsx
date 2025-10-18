@@ -12,6 +12,7 @@ const App: React.FC = () => {
     deleteVideo, 
     getAnnotationsForVideo,
     addAnnotation,
+    addMultipleAnnotations,
     updateAnnotation,
     deleteAnnotation,
     isDBReady 
@@ -80,6 +81,7 @@ const App: React.FC = () => {
                 onBack={handleDeselectVideo}
                 getAnnotations={() => getAnnotationsForVideo(selectedVideo.id)}
                 addAnnotation={(annotation) => addAnnotation({ ...annotation, videoId: selectedVideo.id })}
+                addMultipleAnnotations={addMultipleAnnotations}
                 updateAnnotation={updateAnnotation}
                 deleteAnnotation={deleteAnnotation}
               />

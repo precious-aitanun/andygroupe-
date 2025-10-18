@@ -10,6 +10,7 @@ interface VideoWorkspaceProps {
   onBack: () => void;
   getAnnotations: () => Promise<Annotation[]>;
   addAnnotation: (annotation: NewAnnotation) => Promise<Annotation>;
+  addMultipleAnnotations: (annotations: NewAnnotation[]) => Promise<void>;
   updateAnnotation: (annotation: Annotation) => Promise<void>;
   deleteAnnotation: (annotationId: string) => Promise<void>;
 }
@@ -19,6 +20,7 @@ const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
   onBack,
   getAnnotations,
   addAnnotation,
+  addMultipleAnnotations,
   updateAnnotation,
   deleteAnnotation
 }) => {
@@ -69,6 +71,7 @@ const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
             currentTime={currentTime}
             getAnnotations={getAnnotations}
             addAnnotation={addAnnotation}
+            addMultipleAnnotations={addMultipleAnnotations}
             updateAnnotation={updateAnnotation}
             deleteAnnotation={deleteAnnotation}
             onSeek={handleSeek}

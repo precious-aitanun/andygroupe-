@@ -81,6 +81,19 @@ const useIndexedDB = () => {
     return fullAnnotation;
   };
 
+  const addMultipleAnnotations = async (annotations: NewAnnotation[]) => {
+    const db = await initDB();
+    const tx = db.transaction(ANNOTATION_STORE, 'readwrite');
+    const store = tx.store;
+    const promises = annotations.map(annotation => {
+        const newId = self.crypto.randomUUID();
+        const fullAnnotation = { ...annotation, id: newId };
+        return store.add(fullAnnotation);
+    });
+    await Promise.all(promises);
+    await tx.done;
+  };
+
   const updateAnnotation = async (annotation: Annotation) => {
     const db = await initDB();
     await db.put(ANNOTATION_STORE, annotation);
@@ -97,6 +110,7 @@ const useIndexedDB = () => {
     deleteVideo, 
     getAnnotationsForVideo, 
     addAnnotation, 
+    addMultipleAnnotations,
     updateAnnotation, 
     deleteAnnotation,
     isDBReady 
