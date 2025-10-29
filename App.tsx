@@ -48,8 +48,8 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans">
-      <header className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-20">
+    <div className="h-screen bg-slate-900 text-slate-100 font-sans flex flex-col">
+      <header className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 z-20 flex-shrink-0">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <LogoIcon className="w-8 h-8 text-sky-500" />
@@ -58,7 +58,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="container mx-auto p-4 md:p-6">
+      <main className="container mx-auto p-4 md:p-6 flex-grow min-h-0">
         <div className="flex flex-col md:flex-row gap-6 h-full">
           <div className={`
             ${selectedVideo ? 'hidden md:block' : 'block'} 
@@ -76,7 +76,7 @@ const App: React.FC = () => {
           </div>
           <div className={`
             ${!selectedVideo ? 'hidden md:flex' : 'block'} 
-            md:w-2/3 lg:w-3/4 transition-all duration-300
+            md:w-2/3 lg:w-3/4 transition-all duration-300 h-full
           `}>
             {selectedVideo ? (
               <VideoWorkspace

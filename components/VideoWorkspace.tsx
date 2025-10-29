@@ -46,7 +46,7 @@ const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
 
   return (
     <div className="bg-slate-800 rounded-xl shadow-lg h-full flex flex-col w-full border border-slate-700">
-      <div className="flex items-center p-3 border-b border-slate-700 bg-slate-800/80 rounded-t-xl">
+      <div className="flex items-center p-3 border-b border-slate-700 bg-slate-800/80 rounded-t-xl flex-shrink-0">
         <button
           onClick={onBack}
           className="flex items-center gap-2 mr-3 px-3 py-1.5 rounded-lg hover:bg-slate-700 transition-colors text-sm font-medium"
@@ -58,7 +58,7 @@ const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
         <h2 className="text-md font-semibold truncate" title={video.name}>{video.name}</h2>
       </div>
 
-      <div className="flex flex-col lg:flex-row flex-grow p-4 gap-4 overflow-hidden">
+      <div className="flex flex-col lg:flex-row flex-grow p-4 gap-4 min-h-0">
         <div className="lg:w-2/3 flex flex-col">
           <VideoPlayer
             ref={videoPlayerRef}
@@ -72,7 +72,7 @@ const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
             frameRate={frameRate}
           />
         </div>
-        <div className="lg:w-1/3 flex flex-col h-full overflow-hidden">
+        <div className="lg:w-1/3 flex flex-col flex-grow min-h-0">
           <AnnotationManager
             video={video}
             currentTime={currentTime}
