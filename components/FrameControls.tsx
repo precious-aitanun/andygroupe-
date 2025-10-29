@@ -31,16 +31,29 @@ const ControlButton: React.FC<{
 );
 
 const FrameControls: React.FC<FrameControlsProps> = ({ onSeekBy, onSeek, currentTime, frameRate }) => {
-  const frameDuration = 1 / frameRate;
 
   const handleFrameSeek = (direction: 1 | -1) => {
-    if (frameDuration <= 0) return; // Avoid division by zero
-    // Calculate the target frame number from the current time, then calculate the new time from that.
-    // This avoids accumulating floating-point errors from repeated addition.
-    const currentFrame = Math.round(currentTime / frameDuration);
+    if (frameRate <= 0) return; // Avoid division by zero
+    
+    // Calculate the current frame number by multiplying by frameRate, which is more direct than dividing by frameDuration.
+    const currentFrame = Math.round(currentTime * frameRate);
     const nextFrame = currentFrame + direction;
-    const newTime = nextFrame * frameDuration;
-    onSeek(newTime);
+
+    let newTime: number;
+
+    // For 30fps, we use a special calculation to match the desired rounding behavior.
+    // By calculating the total milliseconds from the frame number and using Math.floor,
+    // we ensure that 2/30s becomes 66ms (0.066s) instead of rounding up to 67ms.
+    if (frameRate === 30) {
+      const totalMs = Math.floor((nextFrame * 1000) / frameRate);
+      newTime = totalMs / 1000;
+    } else {
+      // For other frame rates (like 10fps), the standard calculation is accurate.
+      newTime = nextFrame / frameRate;
+    }
+    
+    // Ensure the new time is not negative.
+    onSeek(newTime < 0 ? 0 : newTime);
   };
 
   return (
@@ -48,11 +61,11 @@ const FrameControls: React.FC<FrameControlsProps> = ({ onSeekBy, onSeek, current
       <div className="flex items-stretch gap-2">
         <ControlButton onClick={() => onSeekBy(-10)} title="-10 seconds">
           <ChevronDoubleLeftIcon className="w-5 h-5" />
-          <span>-10s</span>
+          <span className="hidden lg:inline">-10s</span>
         </ControlButton>
         <ControlButton onClick={() => onSeekBy(-1)} title="-1 second">
           <BackIcon className="w-5 h-5" />
-          <span>-1s</span>
+          <span className="hidden lg:inline">-1s</span>
         </ControlButton>
         <ControlButton onClick={() => handleFrameSeek(-1)} title={`-1 frame (1/${frameRate}s)`}>
           <StepBackwardIcon className="w-5 h-5" />
@@ -66,11 +79,11 @@ const FrameControls: React.FC<FrameControlsProps> = ({ onSeekBy, onSeek, current
           <StepForwardIcon className="w-5 h-5" />
         </ControlButton>
         <ControlButton onClick={() => onSeekBy(1)} title="+1 second">
-          <span>+1s</span>
+          <span className="hidden lg:inline">+1s</span>
           <ChevronRightIcon className="w-5 h-5" />
         </ControlButton>
         <ControlButton onClick={() => onSeekBy(10)} title="+10 seconds">
-          <span>+10s</span>
+          <span className="hidden lg:inline">+10s</span>
           <ChevronDoubleRightIcon className="w-5 h-5" />
         </ControlButton>
       </div>
