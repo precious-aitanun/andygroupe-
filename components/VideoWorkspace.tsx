@@ -65,7 +65,12 @@ const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
             src={videoUrl}
             onTimeUpdate={setCurrentTime}
           />
-          <FrameControls onSeekBy={handleSeekBy} frameRate={frameRate} />
+          <FrameControls
+            onSeekBy={handleSeekBy}
+            onSeek={handleSeek}
+            currentTime={currentTime}
+            frameRate={frameRate}
+          />
         </div>
         <div className="lg:w-1/3 flex flex-col h-full overflow-hidden">
           <AnnotationManager
