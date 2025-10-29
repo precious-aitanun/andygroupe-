@@ -8,10 +8,9 @@ import {
   ChevronDoubleRightIcon,
 } from './Icons';
 
-const SMALL_STEP_DURATION = 0.1; // 100ms step
-
 interface FrameControlsProps {
   onSeekBy: (amount: number) => void;
+  frameRate: number;
 }
 
 const ControlButton: React.FC<{
@@ -29,7 +28,8 @@ const ControlButton: React.FC<{
   </button>
 );
 
-const FrameControls: React.FC<FrameControlsProps> = ({ onSeekBy }) => {
+const FrameControls: React.FC<FrameControlsProps> = ({ onSeekBy, frameRate }) => {
+  const frameDuration = 1 / frameRate;
   return (
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 p-2 bg-gray-800 rounded-b-lg border-x border-b border-gray-700">
       <div className="flex items-stretch gap-2">
@@ -41,15 +41,15 @@ const FrameControls: React.FC<FrameControlsProps> = ({ onSeekBy }) => {
           <BackIcon className="w-5 h-5" />
           <span>-1s</span>
         </ControlButton>
-        <ControlButton onClick={() => onSeekBy(-SMALL_STEP_DURATION)} title="-0.1 seconds">
+        <ControlButton onClick={() => onSeekBy(-frameDuration)} title={`-1 frame (1/${frameRate}s)`}>
           <StepBackwardIcon className="w-5 h-5" />
-          <span>-0.1s</span>
+          <span>-1f</span>
         </ControlButton>
       </div>
 
       <div className="flex items-stretch gap-2">
-        <ControlButton onClick={() => onSeekBy(SMALL_STEP_DURATION)} title="+0.1 seconds">
-          <span>+0.1s</span>
+        <ControlButton onClick={() => onSeekBy(frameDuration)} title={`+1 frame (1/${frameRate}s)`}>
+          <span>+1f</span>
           <StepForwardIcon className="w-5 h-5" />
         </ControlButton>
         <ControlButton onClick={() => onSeekBy(1)} title="+1 second">

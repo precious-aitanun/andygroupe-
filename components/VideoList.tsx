@@ -10,9 +10,11 @@ interface VideoListProps {
   onSelectVideo: (video: Video) => void;
   onAddVideo: (file: File) => void;
   onDeleteVideo: (videoId: string) => void;
+  frameRate: number;
+  onFrameRateChange: (rate: number) => void;
 }
 
-const VideoList: React.FC<VideoListProps> = ({ videos, selectedVideoId, onSelectVideo, onAddVideo, onDeleteVideo }) => {
+const VideoList: React.FC<VideoListProps> = ({ videos, selectedVideoId, onSelectVideo, onAddVideo, onDeleteVideo, frameRate, onFrameRateChange }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,6 +45,21 @@ const VideoList: React.FC<VideoListProps> = ({ videos, selectedVideoId, onSelect
           onChange={handleFileChange}
           className="hidden"
         />
+      </div>
+      <div className="mb-4">
+        <label htmlFor="frame-rate-select" className="block text-sm font-medium text-gray-400 mb-1">
+          Frame Rate
+        </label>
+        <select
+          id="frame-rate-select"
+          value={frameRate}
+          onChange={(e) => onFrameRateChange(Number(e.target.value))}
+          className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option value={24}>24 FPS</option>
+          <option value={30}>30 FPS</option>
+          <option value={60}>60 FPS</option>
+        </select>
       </div>
       <div className="flex-grow overflow-y-auto pr-2">
         {videos.length === 0 ? (

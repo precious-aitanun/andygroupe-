@@ -7,6 +7,7 @@ import { BackIcon } from './Icons';
 
 interface VideoWorkspaceProps {
   video: Video;
+  frameRate: number;
   onBack: () => void;
   getAnnotations: () => Promise<Annotation[]>;
   addAnnotation: (annotation: NewAnnotation) => Promise<Annotation>;
@@ -17,6 +18,7 @@ interface VideoWorkspaceProps {
 
 const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
   video,
+  frameRate,
   onBack,
   getAnnotations,
   addAnnotation,
@@ -63,7 +65,7 @@ const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
             src={videoUrl}
             onTimeUpdate={setCurrentTime}
           />
-          <FrameControls onSeekBy={handleSeekBy} />
+          <FrameControls onSeekBy={handleSeekBy} frameRate={frameRate} />
         </div>
         <div className="lg:w-1/3 flex flex-col h-full overflow-hidden">
           <AnnotationManager

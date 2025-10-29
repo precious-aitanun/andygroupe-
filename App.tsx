@@ -19,6 +19,7 @@ const App: React.FC = () => {
   } = useIndexedDB();
   
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [frameRate, setFrameRate] = useState<number>(30); // Default to 30 FPS
 
   const handleSelectVideo = useCallback((video: Video) => {
     setSelectedVideo(video);
@@ -69,6 +70,8 @@ const App: React.FC = () => {
               onAddVideo={addVideo}
               onDeleteVideo={handleDeleteVideo}
               selectedVideoId={selectedVideo?.id}
+              frameRate={frameRate}
+              onFrameRateChange={setFrameRate}
             />
           </div>
           <div className={`
@@ -78,6 +81,7 @@ const App: React.FC = () => {
             {selectedVideo ? (
               <VideoWorkspace
                 video={selectedVideo}
+                frameRate={frameRate}
                 onBack={handleDeselectVideo}
                 getAnnotations={() => getAnnotationsForVideo(selectedVideo.id)}
                 addAnnotation={(annotation) => addAnnotation({ ...annotation, videoId: selectedVideo.id })}

@@ -232,7 +232,7 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
   return (
     <>
       <div className="bg-gray-800 h-full flex flex-col rounded-lg">
-        <div className="flex justify-between items-center p-3 border-b border-gray-700">
+        <div className="flex-shrink-0 flex justify-between items-center p-3 border-b border-gray-700">
           <h3 className="text-md font-semibold">Annotations</h3>
           <div className="flex items-center gap-1">
             <input type="file" accept=".csv" ref={importInputRef} onChange={handleFileImport} className="hidden" />
@@ -273,7 +273,7 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
           </div>
         </div>
 
-        <div className="flex-grow overflow-y-auto p-3 space-y-3">
+        <div className="flex-grow overflow-y-auto p-3 space-y-3 min-h-0">
           {annotations.length === 0 ? (
             <p className="text-center text-gray-500 pt-8">No annotations yet.</p>
           ) : (
@@ -302,7 +302,7 @@ const AnnotationManager: React.FC<AnnotationManagerProps> = ({
           )}
         </div>
 
-        <div className="p-3 border-t border-gray-700 bg-gray-900/50 rounded-b-lg">
+        <div className="flex-shrink-0 p-3 border-t border-gray-700 bg-gray-900/50 rounded-b-lg">
           <div className="grid grid-cols-2 gap-2 mb-2 text-sm">
               <div className="bg-gray-700 p-2 rounded-md flex justify-between items-center">
                   <div>
