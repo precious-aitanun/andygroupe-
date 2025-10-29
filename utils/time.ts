@@ -3,12 +3,17 @@ export const formatTimestamp = (seconds: number): string => {
   if (isNaN(seconds) || seconds < 0) {
     return '00:00.000';
   }
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
   
-  const paddedMinutes = String(minutes).padStart(2, '0');
-  const paddedSeconds = String(Math.floor(remainingSeconds)).padStart(2, '0');
-  const milliseconds = String(Math.round((remainingSeconds - Math.floor(remainingSeconds)) * 1000)).padStart(3, '0');
+  const totalMilliseconds = Math.round(seconds * 1000);
   
-  return `${paddedMinutes}:${paddedSeconds}.${milliseconds}`;
+  const ms = totalMilliseconds % 1000;
+  const totalSeconds = Math.floor(totalMilliseconds / 1000);
+  const s = totalSeconds % 60;
+  const m = Math.floor(totalSeconds / 60);
+
+  const paddedMinutes = String(m).padStart(2, '0');
+  const paddedSeconds = String(s).padStart(2, '0');
+  const paddedMilliseconds = String(ms).padStart(3, '0');
+  
+  return `${paddedMinutes}:${paddedSeconds}.${paddedMilliseconds}`;
 };

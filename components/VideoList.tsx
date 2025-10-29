@@ -48,7 +48,7 @@ const VideoList: React.FC<VideoListProps> = ({ videos, selectedVideoId, onSelect
       </div>
       <div className="mb-4">
         <label htmlFor="frame-rate-select" className="block text-sm font-medium text-gray-400 mb-1">
-          Frame Rate
+          Annotation Mode
         </label>
         <select
           id="frame-rate-select"
@@ -56,9 +56,8 @@ const VideoList: React.FC<VideoListProps> = ({ videos, selectedVideoId, onSelect
           onChange={(e) => onFrameRateChange(Number(e.target.value))}
           className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-sm focus:ring-blue-500 focus:border-blue-500"
         >
-          <option value={24}>24 FPS</option>
-          <option value={30}>30 FPS</option>
-          <option value={60}>60 FPS</option>
+          <option value={30}>30 FPS (0.033s step)</option>
+          <option value={10}>10 FPS (0.100s step)</option>
         </select>
       </div>
       <div className="flex-grow overflow-y-auto pr-2">
