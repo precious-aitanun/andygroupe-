@@ -130,7 +130,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandles, VideoPlayerProps>(({ src, onT
           step="0.01"
           value={currentTime}
           onChange={handleProgressChange}
-          className="w-full h-1.5 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500 mb-2"
+          className="w-full h-1.5 bg-slate-600 rounded-lg appearance-none cursor-pointer accent-sky-500 mb-2 video-progress"
         />
         <div className="flex items-center justify-between text-white">
           <div className="flex items-center gap-3">
@@ -150,12 +150,12 @@ const VideoPlayer = forwardRef<VideoPlayerHandles, VideoPlayerProps>(({ src, onT
               {playbackRate}x
             </button>
             {isSpeedMenuOpen && (
-              <div ref={speedMenuRef} className="absolute bottom-full right-0 mb-2 w-24 bg-gray-900/90 backdrop-blur-sm rounded-md shadow-lg z-10 py-1 border border-gray-700">
+              <div ref={speedMenuRef} className="absolute bottom-full right-0 mb-2 w-24 bg-slate-900/90 backdrop-blur-sm rounded-md shadow-lg z-10 py-1 border border-slate-700">
                 {[2, 1.5, 1.25, 1, 0.75, 0.5, 0.25].map(speed => (
                   <button
                     key={speed}
                     onClick={() => { setPlaybackRate(speed); setIsSpeedMenuOpen(false); }}
-                    className={`block w-full text-center px-3 py-1.5 text-sm hover:bg-blue-600 transition-colors ${playbackRate === speed ? 'bg-blue-600 text-white font-bold' : 'text-gray-200'}`}
+                    className={`block w-full text-center px-3 py-1.5 text-sm hover:bg-sky-600 transition-colors ${playbackRate === speed ? 'bg-sky-600 text-white font-bold' : 'text-slate-200'}`}
                   >
                     {speed === 1 ? 'Normal' : `${speed}x`}
                   </button>

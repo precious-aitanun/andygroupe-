@@ -28,12 +28,12 @@ const VideoList: React.FC<VideoListProps> = ({ videos, selectedVideoId, onSelect
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-lg h-full flex flex-col p-4 border border-gray-700">
+    <div className="bg-slate-800 rounded-xl shadow-lg h-full flex flex-col p-4 border border-slate-700">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Video Library</h2>
         <button
           onClick={triggerFileInput}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 rounded-full transition-colors duration-200 flex items-center justify-center"
+          className="bg-sky-600 hover:bg-sky-700 text-white font-bold p-2 rounded-full transition-colors duration-200 flex items-center justify-center"
           title="Upload new video"
         >
           <PlusIcon className="w-5 h-5" />
@@ -47,14 +47,14 @@ const VideoList: React.FC<VideoListProps> = ({ videos, selectedVideoId, onSelect
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="frame-rate-select" className="block text-sm font-medium text-gray-400 mb-1">
+        <label htmlFor="frame-rate-select" className="block text-sm font-medium text-slate-400 mb-1">
           Annotation Mode
         </label>
         <select
           id="frame-rate-select"
           value={frameRate}
           onChange={(e) => onFrameRateChange(Number(e.target.value))}
-          className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+          className="w-full bg-slate-700 border border-slate-600 rounded-md p-2 text-sm focus:ring-sky-500 focus:border-sky-500"
         >
           <option value={30}>30 FPS (0.033s step)</option>
           <option value={10}>10 FPS (0.100s step)</option>
@@ -62,7 +62,7 @@ const VideoList: React.FC<VideoListProps> = ({ videos, selectedVideoId, onSelect
       </div>
       <div className="flex-grow overflow-y-auto pr-2">
         {videos.length === 0 ? (
-          <div className="text-center text-gray-400 py-10">
+          <div className="text-center text-slate-400 py-10">
             <p>No videos uploaded yet.</p>
             <p className="text-sm">Click the '+' button to add one.</p>
           </div>
@@ -71,8 +71,8 @@ const VideoList: React.FC<VideoListProps> = ({ videos, selectedVideoId, onSelect
             {videos.map(video => (
               <li
                 key={video.id}
-                className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-all duration-200 ${
-                  selectedVideoId === video.id ? 'bg-blue-600 shadow-md' : 'bg-gray-700 hover:bg-gray-600/50'
+                className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-all duration-200 border-l-4 ${
+                  selectedVideoId === video.id ? 'bg-sky-600 shadow-md border-sky-400' : 'bg-slate-700 hover:bg-slate-600/50 border-transparent hover:border-slate-500'
                 }`}
               >
                 <div className="flex-grow truncate" onClick={() => onSelectVideo(video)}>
@@ -85,7 +85,7 @@ const VideoList: React.FC<VideoListProps> = ({ videos, selectedVideoId, onSelect
                       onDeleteVideo(video.id);
                     }
                   }}
-                  className="ml-3 p-1.5 rounded-full text-gray-400 hover:bg-red-500 hover:text-white transition-colors duration-200 flex-shrink-0"
+                  className="ml-3 p-1.5 rounded-full text-slate-400 hover:bg-red-500 hover:text-white transition-colors duration-200 flex-shrink-0"
                   title="Delete video"
                 >
                   <TrashIcon className="w-4 h-4" />

@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  /* Custom styles for the video progress bar to make it feel more premium */
+  input[type="range"].video-progress::-webkit-slider-runnable-track {
+    height: 6px;
+    background-color: #334155; /* slate-700 */
+    border-radius: 3px;
+  }
+  input[type="range"].video-progress::-moz-range-track {
+    height: 6px;
+    background-color: #334155; /* slate-700 */
+    border-radius: 3px;
+  }
+  input[type="range"].video-progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: #f8fafc; /* slate-50 */
+    border-radius: 50%;
+    margin-top: -5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    transition: transform 0.15s ease-in-out;
+  }
+  input[type="range"].video-progress:hover::-webkit-slider-thumb {
+    transform: scale(1.1);
+  }
+  input[type="range"].video-progress::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background-color: #f8fafc; /* slate-50 */
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    transition: transform 0.15s ease-in-out;
+  }
+  input[type="range"].video-progress:hover::-moz-range-thumb {
+    transform: scale(1.1);
+  }
+}

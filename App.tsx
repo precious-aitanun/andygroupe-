@@ -38,9 +38,9 @@ const App: React.FC = () => {
 
   if (!isDBReady) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
+      <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
         <div className="flex flex-col items-center gap-4">
-          <LogoIcon className="w-16 h-16 animate-pulse text-blue-500" />
+          <LogoIcon className="w-16 h-16 animate-pulse text-sky-500" />
           <p className="text-lg">Initializing Database...</p>
         </div>
       </div>
@@ -48,11 +48,11 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 font-sans">
-      <header className="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-20">
+    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans">
+      <header className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-20">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <LogoIcon className="w-8 h-8 text-blue-500" />
+            <LogoIcon className="w-8 h-8 text-sky-500" />
             <h1 className="text-xl font-bold tracking-tight">Video Annotation Pro</h1>
           </div>
         </div>
@@ -90,9 +90,9 @@ const App: React.FC = () => {
                 deleteAnnotation={deleteAnnotation}
               />
             ) : (
-              <div className="flex flex-col items-center justify-center h-full bg-gray-800 rounded-lg p-8 border border-gray-700">
-                <p className="text-xl text-gray-400">Select a video to begin annotating</p>
-                <p className="text-gray-500 mt-2">Or upload a new video from the list panel.</p>
+              <div className="flex flex-col items-center justify-center h-full bg-slate-800 rounded-xl p-8 border border-slate-700">
+                <p className="text-xl text-slate-400">Select a video to begin annotating</p>
+                <p className="text-slate-500 mt-2">Or upload a new video from the list panel.</p>
               </div>
             )}
           </div>

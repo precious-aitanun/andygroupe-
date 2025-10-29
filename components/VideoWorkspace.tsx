@@ -45,11 +45,11 @@ const VideoWorkspace: React.FC<VideoWorkspaceProps> = ({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-lg h-full flex flex-col w-full border border-gray-700">
-      <div className="flex items-center p-3 border-b border-gray-700 bg-gray-800/80 rounded-t-lg">
+    <div className="bg-slate-800 rounded-xl shadow-lg h-full flex flex-col w-full border border-slate-700">
+      <div className="flex items-center p-3 border-b border-slate-700 bg-slate-800/80 rounded-t-xl">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 mr-3 px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
+          className="flex items-center gap-2 mr-3 px-3 py-1.5 rounded-lg hover:bg-slate-700 transition-colors text-sm font-medium"
           title="Back to list"
         >
           <BackIcon className="w-5 h-5" />

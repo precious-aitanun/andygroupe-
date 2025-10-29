@@ -24,7 +24,7 @@ const ControlButton: React.FC<{
   <button
     onClick={onClick}
     title={title}
-    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors text-sm font-semibold ${className}`}
+    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors text-sm font-semibold ${className}`}
   >
     {children}
   </button>
@@ -57,7 +57,7 @@ const FrameControls: React.FC<FrameControlsProps> = ({ onSeekBy, onSeek, current
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 p-2 bg-gray-800 rounded-b-lg border-x border-b border-gray-700">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 p-2 bg-slate-800 rounded-b-lg border-x border-b border-slate-700">
       <div className="flex items-stretch gap-2">
         <ControlButton onClick={() => onSeekBy(-10)} title="-10 seconds">
           <ChevronDoubleLeftIcon className="w-5 h-5" />
